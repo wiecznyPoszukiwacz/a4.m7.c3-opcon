@@ -1,0 +1,48 @@
+
+@font-face {
+	font-family: 'Agave';
+	src: url('./fonts/AgaveNerdFont-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Terminess';
+	src: url('./fonts/TerminessNerdFont-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body{
+	background-image: url(./bg.jpg);
+}
+
+#displayContainer{
+	height: 300px;
+	margin: 15px;
+	border: 10px solid #44444488;
+}
+
+#display{
+	height: 100%;
+}
+
+#terminalContainer{
+	font-family: Terminess;
+	font-size: 20px;
+	border: 10px solid #44444488;
+	position: absolute;
+	bottom: 5px;
+	left: 15px;
+	right: 15px;
+}
+
+canvas {
+	display: block;
+}
+

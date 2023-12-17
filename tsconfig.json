@@ -1,0 +1,13 @@
+{
+	"compilerOptions":{
+		"outDir": "build",
+		"target": "es2022",
+		"moduleResolution": "nodenext",
+		"module": "NodeNext",
+		"allowImportingTsExtensions": false,
+		"noEmit": false
+	},
+	"module": "NodeNext",
+	"include": ["src/**/*", "src/*"],
+	"moduleResolution": "nodenext"
+}
