@@ -1,8 +1,8 @@
-import './js/Display.mts'
+import './js/Display.mjs'
 import './style/style.css'  
 
-import { OpTerminal } from './js/Terminal.mts'
-import { Environment} from './js/Environment.mts'
+import { OpTerminal } from './js/Terminal.mjs'
+import { Environment} from './js/Environment.mjs'
 
 const terminal = new OpTerminal()
 

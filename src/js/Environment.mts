@@ -1,6 +1,6 @@
 import * as acorn  from 'acorn'
 import * as awalk  from 'acorn-walk'
-import { OpTerminal } from './Terminal.mts'
+import { OpTerminal } from './Terminal.mjs'
 import { Literal } from 'acorn'
 
 export class Environment{

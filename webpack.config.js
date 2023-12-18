@@ -39,6 +39,9 @@ devServer: {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.mts'],
+	extensionAlias:{
+		".mjs": ['.mjs', '.mts']
+	}
   },
   output: {
     filename: 'bundle.js',

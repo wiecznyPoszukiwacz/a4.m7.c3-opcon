@@ -1,6 +1,6 @@
 import P5 from 'p5'
-import { Widget} from './Widget.mts'
-import { GroundView } from './widgets/Ground.mts';
+import { Widget} from './Widget.mjs'
+import { GroundView } from './widgets/Ground.mjs';
 
 const widgets: Array<Widget> = []
 

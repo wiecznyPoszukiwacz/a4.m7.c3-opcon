@@ -1,4 +1,4 @@
-import { Widget } from "../Widget.mts";
+import { Widget } from "../Widget.mjs";
 
 export class GroundView extends Widget{
 
