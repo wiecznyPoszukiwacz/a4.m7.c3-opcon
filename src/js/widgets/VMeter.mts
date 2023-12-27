@@ -14,8 +14,7 @@ export class VMeter extends Widget{
 
 	declare protected config: IVMeterConfig
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	protected override onInit(_config: FlatList | null){
+	protected override onInit(_config: FlatList | null):void{
 		this.config = {
 			space: 12,
 			value: 2,
@@ -26,7 +25,7 @@ export class VMeter extends Widget{
 
 	}
 
-	protected override onDraw(){
+	protected override onDraw(): void{
 
 		const space = this.config["space"]
 

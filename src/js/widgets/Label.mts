@@ -10,7 +10,7 @@ export class Label extends Widget{
 
 	declare protected config: ILabelConfig
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 	protected override onInit(_config: FlatList | null): void{
 		this.config = {
 			label: '()',

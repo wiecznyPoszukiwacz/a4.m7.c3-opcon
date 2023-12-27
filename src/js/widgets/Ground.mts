@@ -1,33 +1,52 @@
-import { Widget } from "../Widget.mjs";
+import { Point, Widget } from "../Widget.mjs";
+import { FlatList } from "../types.mjs";
+
+export type IGroundViewConfig = {
+	starAngle: number
+}
 
 export class GroundView extends Widget{
 
-	protected angle: number = 0
+	declare protected config: IGroundViewConfig
 
-	protected onDraw(){
+	protected override onInit(_config: FlatList | null):void{
+		this.config = {
+			starAngle: 90
+		}
 
-		const targetAngle = (new Date().getSeconds()) * 6
+	}
 
-		this.angle += (targetAngle - this.angle) / 2
+
+	protected override onDraw():void{
 
 		const starPathRadius = this.r * 0.75
 
 		this.setStyle({lineDash: [1, 4]})
 		this.circle(this.center, starPathRadius)
 
-		const starPosition = this.getPointOnCircle(this.center, starPathRadius, this.angle)
-		if(this.angle > 180){
-			this.line(starPosition, this.center)
+		let angle = this.config.starAngle + 180
+		if(angle > 360){
+			angle -= 360
 		}
-		this.setStyle({ lineDash: false, fill: true })
+		const starPosition = this.getPointOnCircle(this.center, starPathRadius, angle)
+		if(angle > 180){
+			this.setStyle({ fill: true })
+			this.line(starPosition, this.center)
+		}else{
+			this.setStyle({ lineDash: false, fill: false })
+		}
 
-		let starRadius = this.w / 20
+		this.setStyle({ lineDash: false})
+
+		// gwiazda
+		const starRadius = this.size.w / 20
 		this.circle(starPosition, starRadius)
 
+		// grunt
 		this.line(this.leftMid, this.rightMid)
 
-		for(let x = this.margin + 10; x < this.w; x+= 10){
-			this.line({x, y: this.center.y}, {x: x - 10, y: this.center.y + 10})
+		for(let x = this.margin + 10; x < this.size.w; x+= 10){
+			this.line(new Point(x, this.center.y), new Point(x - 10, this.center.y + 10))
 		}
 
 

@@ -2,14 +2,14 @@
 
 
 module.exports = {
-	extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended-type-checked', 'plugin:@stylistic/eslint-plugin'],
+	extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended-type-checked'],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		project: true,
 		tsconfigRootDir: __dirname
 
 	},
-	plugins: ['@typescript-eslint', '@stylistic/eslint-plugin'],
+	plugins: ['@typescript-eslint', '@stylistic/eslint-plugin', '@stylistic'],
 	root: true,
 	ignorePatterns: [
 		'webpack.config.js', 'dist/*.js', 'node_modules'
