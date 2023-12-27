@@ -1,14 +1,7 @@
 
 @font-face {
-	font-family: 'Agave';
+	font-family: 'Agave Nerd Font';
 	src: url('./fonts/AgaveNerdFont-Regular.ttf') format('truetype');
-	font-weight: normal;
-	font-style: normal;
-}
-
-@font-face {
-	font-family: 'Terminess';
-	src: url('./fonts/TerminessNerdFont-Regular.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -19,7 +12,7 @@ html, body {
 }
 
 body{
-	background-image: url(./bg.jpg);
+	background-image: url(./cave.png);
 }
 
 #displayContainer{
