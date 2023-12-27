@@ -1,37 +1,49 @@
 import P5 from 'p5'
 import { Widget} from './Widget.mjs'
-import { GroundView } from './widgets/Ground.mjs';
 
-const widgets: Array<Widget> = []
+export class Display{
 
-const sketch = (p5: P5) => {
-	p5.setup = () => {
-		const display = document.getElementById('display')
-		if(!display){
-			throw new Error('no #display element found')
+	public widgets: Map<string, Widget> = new Map()
+	protected p5: P5
+
+	public constructor(){
+		const sketch = (p5: P5):void => {
+			p5.setup = () => {
+				const display = document.getElementById('display')
+				if(!display){
+					throw new Error('no #display element found')
+				}
+				const canvas = p5.createCanvas(display.offsetWidth, display.offsetHeight);
+				canvas.parent('display')
+				p5.stroke(p5.color('#eaeaea'))
+				p5.strokeWeight(0.5)
+				p5.frameRate(1)
+				p5.angleMode(p5.DEGREES)
+				p5.noFill()
+			};
+
+			// The sketch draw method
+			p5.draw = () => {
+
+				p5.clear(1, 42, 75, 56)
+
+				p5.background("#101020aa");
+				for(const [, widget] of this.widgets){
+					p5.push()
+					widget.draw()
+					p5.pop()
+				}
+
+			}
 		}
-		const canvas = p5.createCanvas(display.offsetWidth, display.offsetHeight);
-		canvas.parent('display')
-		p5.stroke(p5.color('#eaeaea'))
-		p5.strokeWeight(1)
-		p5.frameRate(12)
-		p5.angleMode(p5.DEGREES)
-	};
 
-	// The sketch draw method
-	p5.draw = () => {
-		p5.background("#102040");
+		this.p5 = new P5(sketch)
 
-		for(const widget of widgets){
-			widget.draw()
-		}
 	}
-}
 
-const p5 = new P5(sketch)
-widgets.push(new GroundView(p5, {
-	w: 150,
-	h: 150,
-	x: 10,
-	y: 10
-}))
+	public addWidget(id: string, widget: Widget): void{
+		widget.setP5(this.p5)
+		this.widgets.set(id, widget)
+	}
+
+}
