@@ -1,11 +1,21 @@
 {
 	"compilerOptions":{
-		"outDir": "build",
+		   "outDir": "build",
 		"target": "es2022",
 		"moduleResolution": "nodenext",
 		"module": "NodeNext",
 		"allowImportingTsExtensions": false,
-		"noEmit": false
+		"noEmit": false,
+
+		"strict": true,
+		"alwaysStrict": true,
+		"allowUnusedLabels": false,
+			
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noPropertyAccessFromIndexSignature": true
 	},
 	"module": "NodeNext",
 	"include": ["src/**/*", "src/*"],

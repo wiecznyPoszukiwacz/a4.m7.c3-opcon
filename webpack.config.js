@@ -1,19 +1,22 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const webpack = require('webpack')
 
 module.exports = {
 	optimization: {
 		usedExports: false
 	},
-	 plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Twoja Nazwa Aplikacji', // Tutaj możesz ustawić tytuł
-      template: './src/index.html' // Ścieżka do twojego szablonu HTML
-    }),
-		   new MiniCssExtractPlugin(),
-    // Możesz dodać więcej pluginów tutaj
-  ],
+	plugins: [
+		new HtmlWebpackPlugin({
+			title: 'Twoja Nazwa Aplikacji', // Tutaj możesz ustawić tytuł
+			template: './src/index.html' // Ścieżka do twojego szablonu HTML
+		}),
+		new MiniCssExtractPlugin(),
+		new webpack.DefinePlugin({
+			'process.env.MACHINARIUM_URL': JSON.stringify(process.env.NODE_ENV === 'production' ? 'wss://a4m7c3.space/machinarium/' : 'ws://localhost:8090/')
+		})
+	],
 devServer: {
     liveReload: true,
   },
