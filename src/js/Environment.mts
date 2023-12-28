@@ -71,7 +71,7 @@ export class Environment{
 		this.connect()
 	}
 
-	protected connect(){
+	protected connect(): void{
 		// @ts-ignore
 		this.ws = new WebSocket(process.env.MACHINARIUM_URL ?? '')
 
@@ -131,12 +131,12 @@ export class Environment{
 	}
 
 
-	public setTerminal(terminal: OpTerminal){
+	public setTerminal(terminal: OpTerminal): void{
 		this.terminal = terminal
 		this.terminal.setPrompt(this.prompts[this.mode] + this.serverPrompt )
 	}
 
-	public setDisplay(display: Display){
+	public setDisplay(display: Display): void{
 		this.display = display
 
 			
@@ -153,11 +153,15 @@ export class Environment{
 		))
 
 		display.addWidget('lb', new Label({
-			w: 150, h: 15, x: 230, y: 30, border: 0
-		}, {label: 'charge', text: '78%'}))
+			w: 100, h: 20, x: 230, y: 30, border: 0, margin: 0
+		}, {label: 'charge', text: '78%', invert: true, unit: '', invertMargin: 5}))
+
+		display.addWidget('lb2', new Label({
+			w: 100, h: 20, x: 230, y: 52, border: 1, margin: 0
+		}, {label: 'charge', text: '78%', invert: false, unit: '', invertMargin: 0}))
 	}
 
-	public execute(command: string){
+	public execute(command: string): void{
 
 		let answer: string = ''
 		if(command.startsWith('/')){

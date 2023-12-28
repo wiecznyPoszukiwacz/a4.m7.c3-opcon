@@ -25,7 +25,7 @@ export class VMeter extends Widget{
 
 	}
 
-	protected override onDraw(): void{
+	protected override onDraw(_frame: number): void{
 
 		const space = this.config["space"]
 

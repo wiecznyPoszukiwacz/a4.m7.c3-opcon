@@ -17,7 +17,7 @@ export class GroundView extends Widget{
 	}
 
 
-	protected override onDraw():void{
+	protected override onDraw(_frame: number):void{
 
 		const starPathRadius = this.r * 0.75
 
