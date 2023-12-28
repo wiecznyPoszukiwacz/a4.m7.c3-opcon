@@ -6,7 +6,17 @@ export class Display{
 	public widgets: Map<string, Widget> = new Map()
 	protected p5: P5
 
+	protected frame: number = 0
+
 	public constructor(){
+		setInterval(()=>{
+			if(this.frame > 6){
+				this.frame = 0
+				return
+			} 
+			this.frame++
+
+		}, 250)
 		const sketch = (p5: P5):void => {
 			p5.setup = () => {
 				const display = document.getElementById('display')
@@ -15,9 +25,9 @@ export class Display{
 				}
 				const canvas = p5.createCanvas(display.offsetWidth, display.offsetHeight);
 				canvas.parent('display')
-				p5.stroke(p5.color('#eaeaea'))
+				p5.stroke(p5.color('#555555'))
 				p5.strokeWeight(0.5)
-				p5.frameRate(1)
+				p5.frameRate(16)
 				p5.angleMode(p5.DEGREES)
 				p5.noFill()
 			};
@@ -27,10 +37,10 @@ export class Display{
 
 				p5.clear(1, 42, 75, 56)
 
-				p5.background("#101020aa");
+				//p5.background("#101020aa");
 				for(const [, widget] of this.widgets){
 					p5.push()
-					widget.draw()
+					widget.draw(Math.pow(2, this.frame))
 					p5.pop()
 				}
 
