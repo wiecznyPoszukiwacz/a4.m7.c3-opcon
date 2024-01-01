@@ -1,213 +1,104 @@
 import { Display } from './Display.mjs'
 import { OpTerminal } from './Terminal.mjs'
-import { Widget } from './Widget.mjs'
-import { FlatList } from './types.mjs'
-import { GroundView } from './widgets/Ground.mjs'
-import { Label } from "./widgets/Label.mjs"
-import { VMeter } from './widgets/VMeter.mjs'
+import { FlatList, IIncomingData } from './types.mjs'
+//import { Explorer } from './explorer/explorer.mjs'
+import { Machinarium } from './Machinarium.mjs'
+import { LayoutManager } from './LayoutManager.mjs'
+import { Registry } from './Registry.mjs'
 
-type IIncomingData = {
-	type: 'terminalOutput',
-	data: string | Array<string>
-} | {
-	type: 'config',
-	data: {
-		prompt?: string
-	}
-} | {
-	type: 'report',
-	data: {
-		[key:string]: FlatList
-	}
-}
-
-export type IWidgetDataLink = {
-	widget: string
-	metric: string
-	device: string
-	value: string
-}
 
 export class Environment{
 
-	protected terminal!: OpTerminal
-	protected display!: Display
-	protected ws!: WebSocket
+	protected terminal: OpTerminal | null
+	protected display: Display | null
+	//protected explorer: Explorer
+	protected machinarium: Machinarium
 
-	protected allowedModes: Array<string> = ['local', 'server', 'script']
-	protected mode: string = 'server'
+	protected registry: Registry
 
-	protected serverPrompt: string = ''
 
-	protected dataLinks: Array<IWidgetDataLink> = []
+	protected useTerminal = true
+	protected useDisplay = true
 
-	public report: {[key:string]:FlatList} = {}
-
-	protected prompts: Record<string, string> = {
-		'local':  ' ',
-		'server': '󰤉 ',
-		'script': ' '
-	}
+	protected layoutManager!: LayoutManager
 
 	public constructor(){
-		this.dataLinks.push({
-			widget: 'm1', 
-			metric: 'value',
-			device: 'AC878',
-			value: 'level'
-		})
-		this.dataLinks.push({
-			widget: 'gv', 
-			metric: 'starAngle',
-			device: 'W0',
-			value: 'starAngle'
-		})
-		this.dataLinks.push({
-			widget: 'lb', 
-			metric: 'text',
-			device: 'AC878',
-			value: 'charge'
-		})
-		this.connect()
-	}
+		this.registry = new Registry()
+		
+		this.layoutManager = new LayoutManager()
 
-	protected connect(): void{
+		if(this.useDisplay){
+			const displayElement = this.layoutManager.createBlock('display')
+			this.display = new Display(displayElement, this.registry)
+		}else{
+			this.display = null
+		}
+
+		if(this.useTerminal){
+			const terminalElement = this.layoutManager.createBlock('terminal')
+			this.terminal = new OpTerminal(terminalElement)
+
+			this.terminal.onCommand((mode: string, command: string)=>{
+				if(mode === 'server'){
+					this.executeServerCommand(command)
+				}else{
+					this.executeLocalCommand(command)
+				}
+			})
+		}else{
+			this.terminal = null
+		}
+
+		const sceneElement = this.layoutManager.createBlock('scene')
+		//this.explorer = new Explorer(sceneElement)
+		
+
+
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
-		this.ws = new WebSocket(process.env.MACHINARIUM_URL ?? '')
+		this.machinarium = new Machinarium(process.env.MACHINARIUM_URL ?? '', (data: IIncomingData) => {
+			this.handleIncomingData(data)
+		})
 
-		this.ws.onopen = (_event) => {
-			this.terminal.line('connected to server')
-		}
-
-		this.ws.onclose = (_e: any) => {
-			setTimeout(()=> {
-				this.connect()
-			}, 1000)
-		}
-		this.ws.onmessage = (message) => {
-			this.handleIncomingData(JSON.parse(message.data))
-		}
 	}
 
-	protected handleIncomingData(data: IIncomingData){
 
-		if(data.type === 'terminalOutput'){
-			if(Array.isArray(data.data)){
-				for(const line of data.data){
-					this.terminal.line(line)
-				}
-			}else{
-				this.terminal.line(data.data)
-			}
+
+	protected handleIncomingData(data: IIncomingData):void{
+
+		if(data.type === 'terminalOutput'&& this.terminal){
+			this.terminal.output(data.data)
+
 		}else if(data.type === 'report'){
-			this.report = data.data
+			this.registry.update(data.data)
 
-			for(let link of this.dataLinks){
-				let v: FlatList = {}
-				v[link.metric] = this.report[link.device][link.value]
-				const widget = this.getWidget(link.widget)
-				if(widget){
-					widget.setup(v)
-				}
-			}
 
 		}else if(data.type === 'config'){
-			if(data.data.prompt){
-				this.serverPrompt = data.data.prompt
-				this.terminal.setPrompt(this.prompts[this.mode] + this.serverPrompt )
+			if(this.terminal){
+				this.terminal.configure(data.data)
 			}
 		}else{
-			this.terminal.line(`received unknown data packet ${JSON.stringify(data)}`)
-		}
-
-	}
-
-	protected getWidget(id: string): Widget | null | undefined {
-		if(this.display.widgets.has(id)){
-			return this.display.widgets.get(id)
-		}else{
-			return null
-		}
-	}
-
-
-	public setTerminal(terminal: OpTerminal): void{
-		this.terminal = terminal
-		this.terminal.setPrompt(this.prompts[this.mode] + this.serverPrompt )
-	}
-
-	public setDisplay(display: Display): void{
-		this.display = display
-
-			
-		display.addWidget('gv', new GroundView({
-			w: 150, h: 150, x: 10, y: 10
-		}))
-
-
-		display.addWidget('m1', new VMeter({
-			w: 20, h: 150, x: 170, y: 10, margin: 0, border: 0}, {
-				bars: 20,
-				space: 6
+			if(this.terminal){
+				this.terminal.line(`received unknown data packet ${JSON.stringify(data)}`)
 			}
-		))
-
-		display.addWidget('lb', new Label({
-			w: 100, h: 20, x: 230, y: 30, border: 0, margin: 0
-		}, {label: 'charge', text: '78%', invert: true, unit: '', invertMargin: 5}))
-
-		display.addWidget('lb2', new Label({
-			w: 100, h: 20, x: 230, y: 52, border: 1, margin: 0
-		}, {label: 'charge', text: '78%', invert: false, unit: '', invertMargin: 0}))
-	}
-
-	public execute(command: string): void{
-
-		let answer: string = ''
-		if(command.startsWith('/')){
-			this.executeControlCommand(command)
-
-		}else if(this.mode === 'local'){
-			answer = this.executeLocalCommand(command)
-
-		}else if(this.mode === 'server'){
-			answer = this.executeServerCommand(command)
-
-		}else if(this.mode === 'script'){
-			answer = this.executeScript(command)
 		}
 
-		this.terminal.line(answer)
 	}
 
-	protected executeLocalCommand(command: string){
-		if(command === 'report'){
-			this.terminal.dir(this.report)
-		}
-		return ''
-	}
-
-	protected executeServerCommand(command: string){
-
-		this.ws.send(JSON.stringify({
-			type: 'userCommand',
-			command
-		}))
-
-		return ''
-	}
-
-	protected executeControlCommand(command: string){
-
-		const [cmd, args] = command.substring(1).split(' ')
-		if(cmd === 'mode'){
-			this.mode = args
-			this.terminal.setPrompt(this.prompts[this.mode])
+	protected executeLocalCommand(command: string): void{
+		if(command === 'report' && this.terminal){
+			for(const [name, value] of this.registry.getRegistry()){
+				this.terminal.line(`${name} ${value}`)
+			}
 		}
 	}
 
-	protected executeScript(command: string){
-		return ''
+	protected executeServerCommand(command: string):void{
+		this.machinarium.send('userCommand', command)
+	}
+
+	protected executeScript(command: string): void{
+		return 
 
 		/*
 		const ast = acorn.parse(command, {ecmaVersion: 2024})
