@@ -59,8 +59,8 @@ export class Label extends Widget{
 			textFont: 'Agave Nerd Font'
 		})
 
-		this.text(this.config.label, this.leftMid.move(this.config.invertedMargin, 0), 'leftMid')
-		this.text(this.config.text + ' ' + this.config.unit,  this.rightMid.move(-this.config.invertedMargin, 0), 'rightMid')
+		this.text(this.getValue(this.config.label).toString(), this.leftMid.move(this.config.invertedMargin, 0), 'leftMid')
+		this.text(this.getValue(this.config.text).toString() + ' ' + this.config.unit,  this.rightMid.move(-this.config.invertedMargin, 0), 'rightMid')
 
 	}
 }

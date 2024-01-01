@@ -24,7 +24,7 @@ export class GroundView extends Widget{
 		this.setStyle({lineDash: [1, 4]})
 		this.circle(this.center, starPathRadius)
 
-		let angle = this.config.starAngle + 180
+		let angle = parseInt(this.getValue(this.config.starAngle).toString()) + 180
 		if(angle > 360){
 			angle -= 360
 		}

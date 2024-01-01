@@ -33,8 +33,10 @@ export class VMeter extends Widget{
 
 		let y = this.size.h - space
 
+		const v = (parseInt(this.getValue(this.config.value).toString()) / 100) * this.config.bars
+
 		for(let bar = 0; bar <= this.config.bars; bar++){
-			if(bar === this.config.value){
+			if(bar >= v){
 				this.setStyle({
 					strokeWeight: this.config.inactiveBarHeight
 				})

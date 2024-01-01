@@ -1,5 +1,6 @@
 import P5 from 'p5'
-import { FlatList } from './types.mjs'
+import { FlatList, Primitive } from './types.mjs'
+import { Registry } from './Registry.mjs'
 
 /**
  * 2d coordinates
@@ -76,7 +77,7 @@ export abstract class Widget{
 	}
 
 
-	public constructor(options: IWidgetOptions, config: FlatList | null = null){
+	public constructor(options: IWidgetOptions, config: FlatList | null, protected registry: Registry){
 		this.size = new Size(options.w, options.h)
 
 		this.pos = new Point(options.x, options.y)
@@ -145,10 +146,6 @@ export abstract class Widget{
 		}else if(positionPolicy === 'leftMid'){
 			this.p5.textAlign(this.p5.LEFT, this.p5.CENTER)
 		}
-
-
-
-
 		this.p5.text(text, p.x, p.y)
 		return this
 	}
@@ -209,6 +206,16 @@ export abstract class Widget{
 				this.p5.color(this.colors[style.color])
 
 			}
+		}
+	}
+
+
+	protected getValue(id: Primitive): Primitive{
+		if((typeof id === 'string') && id.startsWith('$')){
+			const v = this.registry.getValue(id.substring(1), id)
+			return v ?? id
+		}else{
+			return id
 		}
 	}
 }
