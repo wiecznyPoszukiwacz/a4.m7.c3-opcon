@@ -19,6 +19,10 @@ module.exports = {
 	],
 devServer: {
     liveReload: true,
+	static: {
+		directory: path.resolve(__dirname, './assets'),
+		publicPath: '/assets'
+	}
   },
   entry: './src/main.mts',
   devtool: 'inline-source-map',

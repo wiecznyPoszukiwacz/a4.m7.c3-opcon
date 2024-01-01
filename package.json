@@ -4,6 +4,8 @@
   "devDependencies": {
     "@stylistic/eslint-plugin": "^1.5.1",
     "@types/p5": "^1.7.5",
+    "@types/three": "^0.160.0",
+    "@types/webfontloader": "^1.6.38",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
     "css-loader": "^6.8.1",
@@ -15,15 +17,16 @@
     "typescript": "^5.3.3",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
-    "@types/webfontloader": "^1.6.38",
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
     "acorn": "^8.11.2",
     "acorn-walk": "^8.3.1",
     "p5": "^1.9.0",
+    "three": "^0.160.0",
     "webfontloader": "^1.6.28",
     "xterm": "^5.3.0",
+    "xterm-addon-fit": "^0.8.0",
     "xterm-readline": "^1.1.1"
   }
 }
